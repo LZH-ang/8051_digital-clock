@@ -1,0 +1,119 @@
+C51 COMPILER V9.60.0.0   TM1637                                                            06/20/2022 13:51:06 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE TM1637
+OBJECT MODULE PLACED IN .\Objects\TM1637.obj
+COMPILER INVOKED BY: D:\KEILC51u5\C51\BIN\C51.EXE TM1637.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\
+                    -TM1637.lst) TABS(2) OBJECT(.\Objects\TM1637.obj)
+
+line level    source
+
+   1          #include "TM1637.h"
+   2          #include "intrins.h"
+   3          #include "delay.h"
+   4          void I2CStart()
+   5          {
+   6   1        CLK = 1;
+   7   1        DIO = 1;
+   8   1        Delay2us();
+   9   1        DIO = 0;
+  10   1      }
+  11          void I2CAsk()
+  12          {
+  13   1        CLK = 0;
+  14   1        Delay5us();
+  15   1        while(DIO);
+  16   1        CLK = 1;
+  17   1        Delay2us();
+  18   1        CLK = 0;
+  19   1      }
+  20          void I2CStop()
+  21          {
+  22   1        CLK = 0;
+  23   1        Delay2us();
+  24   1        DIO = 0;
+  25   1        Delay2us();
+  26   1        CLK = 1;
+  27   1        Delay2us();
+  28   1        DIO = 1;
+  29   1      }
+  30          void I2CWriteByte(u8 dat)
+  31          {
+  32   1        u8 i;
+  33   1        for(i=0;i<8;i++)
+  34   1        {
+  35   2          CLK = 0;
+  36   2          if(dat&0x01)
+  37   2          {
+  38   3            DIO = 1;
+  39   3          }
+  40   2          else
+  41   2          {
+  42   3            DIO = 0;
+  43   3          }
+  44   2          Delay3us();
+  45   2          dat>>=1;
+  46   2          CLK = 1;
+  47   2          Delay3us();
+  48   2        }
+  49   1      }
+  50          void Tm1636_write_display(u8 mode)//1:自动;0;固定
+  51          {
+  52   1        I2CStart();
+  53   1        if(mode)I2CWriteByte(0x40); //40H 地址自动加1 模式,
+  54   1        else I2CWriteByte(0x44);    //44H 固定地址模式
+C51 COMPILER V9.60.0.0   TM1637                                                            06/20/2022 13:51:06 PAGE 2   
+
+  55   1        I2CAsk();                   
+  56   1        I2CStop();  
+  57   1      }
+  58          void Tm1636_set_segbit(u8 addr)//四位:0-3,自动模式必须是0
+  59          {
+  60   1        I2CStart();
+  61   1        I2CWriteByte(0xC0+addr);    //设置首地址 C0 C1 C2 C3
+  62   1        I2CAsk();
+  63   1      }
+  64          void Tm1636_display(u16 num)
+  65          {
+  66   1        I2CWriteByte(num);
+  67   1        I2CAsk();
+  68   1      }
+  69          void Tm1636_discon(u8 light)//亮度:0-7
+  70          {
+  71   1        I2CStop();
+  72   1        I2CStart();
+  73   1        I2CWriteByte(0x88+light);//8F最亮 88-8F 
+  74   1        I2CAsk();
+  75   1        I2CStop();
+  76   1      }
+  77          void display_4seg(u8 G1,u8 G2,u8 G3,u8 G4,u8 light)//4位数码管显示
+  78          {
+  79   1        Tm1636_write_display(1);
+  80   1        Tm1636_set_segbit(0);
+  81   1        Tm1636_display(G1);
+  82   1        Tm1636_display(G2);
+  83   1        Tm1636_display(G3);
+  84   1        Tm1636_display(G4);
+  85   1        Tm1636_discon(light);
+  86   1      }
+  87          void display_1seg(u8 seg_num,u8 segbit,u8 light)//1位数码管显示
+  88          {
+  89   1        Tm1636_write_display(0);
+  90   1        Tm1636_set_segbit(segbit);
+  91   1        Tm1636_display(seg_num);
+  92   1        Tm1636_discon(light);
+  93   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    237    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      13
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
