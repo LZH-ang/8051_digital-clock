@@ -5,7 +5,7 @@ it's my frist repository!
 
 PCB TOOL : AD20.2.8
 
-PROGRAMME : KEIL MDK V5.34
+PROGRAMME : KEIL V5.34
 
 MCU : STC8H1K17
 
