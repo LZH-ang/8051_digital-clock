@@ -3,9 +3,9 @@ look! u found me!
 
 it's my frist repository!
 
-PCB TOOL : AD20.2.8
+PCB SOFTWARE : AD20.2.8
 
-PROGRAMME : KEIL V5.34
+PROGRAMME SOFTWARE : KEIL V5.34
 
 MCU : STC8H1K17
 
