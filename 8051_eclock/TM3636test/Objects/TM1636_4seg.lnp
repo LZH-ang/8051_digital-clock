@@ -1,5 +1,0 @@
-".\Objects\STARTUP.obj",
-".\Objects\mian.obj",
-".\Objects\TM1637.obj" 
-TO ".\Objects\TM1636_4seg" 
-PRINT(".\Listings\TM1636_4seg.m51") RAMSIZE(256) 

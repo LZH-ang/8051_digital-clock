@@ -1,6 +1,0 @@
-".\Objects\main.obj",
-".\Objects\3231.obj",
-".\Objects\TM1637.obj",
-".\Objects\delay.obj" 
-TO ".\Objects\DS3231" 
-PRINT(".\Listings\DS3231.m51") RAMSIZE(256) 
