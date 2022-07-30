@@ -1,0 +1,91 @@
+欢迎关注B站账号“--电子工作室--”
+程序没有注释，如果看不懂可以加群讨论，程序可能不是很严谨，但是常规使用足够了，程序中可以不使用串口，定时器配置可能不同，需要自行配置
+#include<all.h>
+#define FOSC 24000000L
+#define T1MS 65536-FOSC/12/1000
+sbit k1=P2^0;
+sbit k2=P2^1;
+u8 key_data=0;
+u8 bdata kv=0x0f;
+
+sbit kv1=kv^0;
+sbit kv2=kv^1;
+sbit kv3=kv^2;
+sbit kv4=kv^3;
+/*扫描检测对象 k1&&k2
+1,开始拉低扫描
+2，
+*/
+void key_Bitread()
+{
+		if(k1&&k2)
+		{
+				kv1=1;
+				kv2=1;
+				k1=0;
+				_nop_();_nop_();//_nop_();_nop_();
+				kv3=k2;
+				k1=1;
+			
+				k2=0;
+				_nop_();_nop_();//_nop_();_nop_();
+				kv4=k1;
+				k2=1;
+		}
+		else
+		{
+				kv3=1;
+				kv4=1;
+				kv1=k1;
+				kv2=k2;
+		}
+}
+void Key_scan()
+{  
+		static bit flag=1;
+		static u8 count=0;
+		key_Bitread();
+		if(kv!=15&&flag)
+		{
+				count++;
+				if(count>10)
+				{
+						count=0;
+						switch(kv)
+						{
+								/*0011 0111 1011 1100 1101 1110*/
+								case 0x0e:key_data=1;break;
+								case 0x0d:key_data=2;break;
+								case 0x0c:key_data=3;break;
+								
+								case 0x0b:key_data=4;break;
+								case 0x07:key_data=5;break;
+								case 0x03:key_data=6;break;
+								//default :SBUF='E';
+						}
+						//SBUF=key_data+'0';//串口发送
+						flag=0;
+				}
+		}
+		if(kv==15)//没有按键按下
+		{
+				count=0;
+				flag=1;
+		}
+/*00*/	
+		
+}
+void TM1_Isr() interrupt 3
+{
+      Key_scan();                            
+}
+
+void Timer1_init()
+{
+    TMOD = 0x00;                                //模式0
+    TL1 = T1MS;                                 //65536-11.0592M/12/1000
+    TH1 = T1MS>>8;
+    TR1 = 1;                                    //启动定时器
+    ET1 = 1;                                    //使能定时器中断
+    EA = 1;
+}
