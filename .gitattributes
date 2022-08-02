@@ -3,11 +3,8 @@
 *.PrjPcb linguist-detectable
 *.SchLib linguist-detectable
 *.PcbLib linguist-detectable
-*.Cam linguist-detectable
-*.GML linguist-detectable
 *.schdoc linguist-detectable
 *.pcbdoc linguist-detectable
 *.schdoc linguist-language=SchDoc
 *.pcbdoc linguist-language=PcbDoc
 *.htm linguist-language=c
-*.GML linguist-language=PcbDoc
